@@ -11,10 +11,12 @@ import {
   FormControl,
 } from "@/components/ui/form";
 import { toast } from "sonner";
+import { IUser } from "@/types";
 import {
   loginUser,
   reCaptchaTokenVerification,
 } from "@/app/services/AuthService";
+import { jwtDecode } from "jwt-decode";
 import Logo from "@/app/assets/svgs/Logo";
 import { Input } from "@/components/ui/input";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -51,9 +53,10 @@ const LoginForm = () => {
       const res = await loginUser(data);
       //   console.log(res);
       if (res?.success) {
+        const userInfo = jwtDecode(res?.data?.accessToken) as IUser;
         toast.success(res?.message);
         if (redirect) router.push(redirect);
-        else router.push("/profile");
+        else router.push(`/${userInfo.role}/dashboard`);
       } else toast.error(res?.message);
     } catch (error) {
       console.log(error);

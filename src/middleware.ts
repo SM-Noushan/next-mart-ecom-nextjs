@@ -24,7 +24,9 @@ export const middleware = async (req: NextRequest) => {
     if (routes.some((route) => pathname.match(route)))
       return NextResponse.next();
 
-    return NextResponse.redirect(new URL(`/${userInfo.role}`, req.url));
+    return NextResponse.redirect(
+      new URL(`/${userInfo.role}/dashboard`, req.url)
+    );
   }
 };
 

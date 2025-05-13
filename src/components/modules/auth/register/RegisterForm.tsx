@@ -10,6 +10,8 @@ import {
   FormControl,
 } from "@/components/ui/form";
 import { toast } from "sonner";
+import { IUser } from "@/types";
+import { jwtDecode } from "jwt-decode";
 import Logo from "@/app/assets/svgs/Logo";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -37,8 +39,9 @@ const RegisterForm = () => {
       const res = await registerUser(data);
       //   console.log(res);
       if (res?.success) {
+        const userInfo = jwtDecode(res?.data?.accessToken) as IUser;
         toast.success(res?.message);
-        router.push("/profile");
+        router.push(`/${userInfo.role}/dashboard`);
       } else toast.error(res?.message);
     } catch (error) {
       console.log(error);
