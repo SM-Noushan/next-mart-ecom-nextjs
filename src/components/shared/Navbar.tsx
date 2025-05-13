@@ -11,16 +11,23 @@ import {
 import Link from "next/link";
 import { Button } from "../ui/button";
 import Logo from "@/app/assets/svgs/Logo";
+import { protectedRoutes } from "@/constants";
 import { useUser } from "@/context/UserContext";
 import { logOutUser } from "@/app/services/AuthService";
+import { usePathname, useRouter } from "next/navigation";
 import { Heart, LogOut, ShoppingBag } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export default function Navbar() {
+  const router = useRouter();
+  const pathname = usePathname();
   const { user, setIsLoading } = useUser();
+
   const handleLogOut = () => {
     logOutUser();
     setIsLoading(true);
+    if (protectedRoutes.some((route) => pathname.match(route)))
+      router.push("/");
   };
   return (
     <header className="border-b w-full">
