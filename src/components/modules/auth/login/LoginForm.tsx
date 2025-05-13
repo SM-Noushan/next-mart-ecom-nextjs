@@ -21,9 +21,14 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { Button } from "@/components/ui/button";
 import { loginSchema } from "./loginValidation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 const LoginForm = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirectPath");
+
   const form = useForm({
     resolver: zodResolver(loginSchema),
   });
@@ -45,8 +50,11 @@ const LoginForm = () => {
     try {
       const res = await loginUser(data);
       //   console.log(res);
-      if (res?.success) toast.success(res?.message);
-      else toast.error(res?.message);
+      if (res?.success) {
+        toast.success(res?.message);
+        if (redirect) router.push(redirect);
+        else router.push("/profile");
+      } else toast.error(res?.message);
     } catch (error) {
       console.log(error);
     }

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import Logo from "@/app/assets/svgs/Logo";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,6 +20,8 @@ import { registerUser } from "@/app/services/AuthService";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 const RegisterForm = () => {
+  const router = useRouter();
+
   const form = useForm({
     resolver: zodResolver(registrationSchema),
   });
@@ -33,8 +36,10 @@ const RegisterForm = () => {
     try {
       const res = await registerUser(data);
       //   console.log(res);
-      if (res?.success) toast.success(res?.message);
-      else toast.error(res?.message);
+      if (res?.success) {
+        toast.success(res?.message);
+        router.push("/profile");
+      } else toast.error(res?.message);
     } catch (error) {
       console.log(error);
     }
