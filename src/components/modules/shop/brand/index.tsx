@@ -3,24 +3,24 @@
 import React from "react";
 import Image from "next/image";
 import { toast } from "sonner";
-import { ICategory } from "@/types";
+import { IBrand } from "@/types";
 import { Trash } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
+import CreateBrandModal from "./CreateBrandModal";
+import { deleteBrand } from "@/app/services/Brand";
 import { NMTable } from "@/components/ui/core/NMTable";
-import CreateCategoryModal from "./CreateCategoryModal";
-import { deleteCategory } from "@/app/services/Category";
 import DeleteConfirmationModal from "@/components/ui/core/NMModal/DeleteConfirmationModal";
 
-type TManageCategoriesProps = {
-  categories: ICategory[];
+type TManageBrandsProps = {
+  brands: IBrand[];
 };
 
-const ManageCategories = ({ categories }: TManageCategoriesProps) => {
+const ManageBrands = ({ brands }: TManageBrandsProps) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
   const [selectedItem, setSelectedItem] = React.useState<string | null>(null);
 
-  const handleDelete = (data: ICategory) => {
+  const handleDelete = (data: IBrand) => {
     // console.log(data);
     setSelectedId(data._id);
     setSelectedItem(data?.name);
@@ -30,7 +30,7 @@ const ManageCategories = ({ categories }: TManageCategoriesProps) => {
   const handleDeleteConfirm = async () => {
     try {
       if (selectedId) {
-        const res = await deleteCategory(selectedId);
+        const res = await deleteBrand(selectedId);
         // console.log(res);
         if (res.success) {
           toast.success(res.message);
@@ -44,16 +44,14 @@ const ManageCategories = ({ categories }: TManageCategoriesProps) => {
     }
   };
 
-  const columns: ColumnDef<ICategory>[] = [
+  const columns: ColumnDef<IBrand>[] = [
     {
       accessorKey: "name",
-      header: () => (
-        <span className="text-base font-medium">Category Name</span>
-      ),
+      header: () => <span className="text-base font-medium">Brand Name</span>,
       cell: ({ row }) => (
         <div className="flex items-center space-x-3">
           <Image
-            src={row.original.icon}
+            src={row.original.logo}
             alt={row.original.name}
             width={40}
             height={40}
@@ -98,10 +96,10 @@ const ManageCategories = ({ categories }: TManageCategoriesProps) => {
   return (
     <div>
       <div className="flex items-center justify-between mb-5">
-        <h1 className="text-xl font-bold">Manage Categories</h1>
-        <CreateCategoryModal />
+        <h1 className="text-xl font-bold">Manage Brands</h1>
+        <CreateBrandModal />
       </div>
-      <NMTable data={categories} columns={columns} />
+      <NMTable data={brands} columns={columns} />
       <DeleteConfirmationModal
         name={selectedItem}
         isOpen={isModalOpen}
@@ -112,4 +110,4 @@ const ManageCategories = ({ categories }: TManageCategoriesProps) => {
   );
 };
 
-export default ManageCategories;
+export default ManageBrands;
