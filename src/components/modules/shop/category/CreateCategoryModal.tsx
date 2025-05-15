@@ -26,6 +26,7 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import ImagePreviewer from "@/components/ui/core/NMImageUploader/ImagePreviewer";
 
 const CreateCategoryModal = () => {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [imageFiles, setImageFiles] = React.useState<File[] | []>([]);
   const [imagePreview, setImagePreview] = React.useState<string[] | []>([]);
 
@@ -45,86 +46,85 @@ const CreateCategoryModal = () => {
         setImageFiles([]);
         setImagePreview([]);
         form.reset();
+        setIsModalOpen(false);
       } else toast.error(res.message);
     } catch (error) {
       console.error(error);
     }
   };
   return (
-    <div>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button>Create Category</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Create Product Category</DialogTitle>
-          </DialogHeader>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+    <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+      <DialogTrigger asChild>
+        <Button>Create Category</Button>
+      </DialogTrigger>
+      <DialogContent className="max-sm:max-w-[85%] max-sm:rounded-lg">
+        <DialogHeader>
+          <DialogTitle>Create Product Category</DialogTitle>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input type="text" {...field} value={field.value || ""} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex max-md:flex-col md:items-center justify-between mt-5 w-full">
               <FormField
                 control={form.control}
-                name="name"
+                name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} value={field.value || ""} />
+                      <Textarea
+                        className="h-36 md:w-72"
+                        {...field}
+                        value={field.value || ""}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <div className="flex max-md:flex-col md:items-center justify-between mt-5 w-full">
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          className="h-36 md:w-72"
-                          {...field}
-                          value={field.value || ""}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
 
-                <div className="max-md:w-full">
-                  {imagePreview.length > 0 ? (
-                    <ImagePreviewer
-                      setImageFiles={setImageFiles}
-                      imagePreview={imagePreview}
-                      setImagePreview={setImagePreview}
-                      className="mt-8 w-full max-md: *:mx-auto"
-                    />
-                  ) : (
-                    <NMImageUploader
-                      setImageFiles={setImageFiles}
-                      setImagePreview={setImagePreview}
-                      label="Upload Icon"
-                      className="mt-4 md:mt-8"
-                    />
-                  )}
-                </div>
+              <div className="max-md:w-full">
+                {imagePreview.length > 0 ? (
+                  <ImagePreviewer
+                    setImageFiles={setImageFiles}
+                    imagePreview={imagePreview}
+                    setImagePreview={setImagePreview}
+                    className="mt-8 w-full max-md: *:mx-auto"
+                  />
+                ) : (
+                  <NMImageUploader
+                    setImageFiles={setImageFiles}
+                    setImagePreview={setImagePreview}
+                    label="Upload Icon"
+                    className="mt-4 md:mt-8"
+                  />
+                )}
               </div>
+            </div>
 
-              <Button
-                disabled={isSubmitting}
-                type="submit"
-                className="mt-5 w-full"
-              >
-                {isSubmitting ? "Creating...." : "Create"}
-              </Button>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
-    </div>
+            <Button
+              disabled={isSubmitting}
+              type="submit"
+              className="mt-5 w-full"
+            >
+              {isSubmitting ? "Creating...." : "Create"}
+            </Button>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 };
 

@@ -1,19 +1,47 @@
 "use client";
 
+import React from "react";
 import Image from "next/image";
+import { toast } from "sonner";
 import { ICategory } from "@/types";
 import { Trash } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { NMTable } from "@/components/ui/core/NMTable";
 import CreateCategoryModal from "./CreateCategoryModal";
+import { deleteCategory } from "@/app/services/Category";
+import DeleteConfirmationModal from "@/components/ui/core/NMModal/DeleteConfirmationModal";
 
 type TManageCategoriesProps = {
   categories: ICategory[];
 };
 
 const ManageCategories = ({ categories }: TManageCategoriesProps) => {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [selectedId, setSelectedId] = React.useState<string | null>(null);
+  const [selectedItem, setSelectedItem] = React.useState<string | null>(null);
+
   const handleDelete = (data: ICategory) => {
-    console.log(data);
+    // console.log(data);
+    setSelectedId(data._id);
+    setSelectedItem(data?.name);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      if (selectedId) {
+        const res = await deleteCategory(selectedId);
+        console.log(res);
+        if (res.success) {
+          toast.success(res.message);
+          setSelectedId(null);
+          setSelectedItem(null);
+          setIsModalOpen(false);
+        } else toast.error(res.message);
+      }
+    } catch (err: any) {
+      console.error(err.message);
+    }
   };
 
   const columns: ColumnDef<ICategory>[] = [
@@ -74,6 +102,12 @@ const ManageCategories = ({ categories }: TManageCategoriesProps) => {
         <CreateCategoryModal />
       </div>
       <NMTable data={categories} columns={columns} />
+      <DeleteConfirmationModal
+        name={selectedItem}
+        isOpen={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        onConfirm={handleDeleteConfirm}
+      />
     </div>
   );
 };
