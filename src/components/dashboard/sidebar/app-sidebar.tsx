@@ -12,7 +12,7 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { NavUser } from "./nav-user";
-import Logo from "@/app/assets/svgs/Logo";
+import Logo from "@/assets/svgs/Logo";
 import { Bot, Settings2, SquareTerminal } from "lucide-react";
 import { NavMain } from "@/components/dashboard/sidebar/nav-main";
 

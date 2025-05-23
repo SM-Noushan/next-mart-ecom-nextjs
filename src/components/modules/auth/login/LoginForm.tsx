@@ -17,7 +17,7 @@ import {
   reCaptchaTokenVerification,
 } from "@/app/services/AuthService";
 import { jwtDecode } from "jwt-decode";
-import Logo from "@/app/assets/svgs/Logo";
+import Logo from "@/assets/svgs/Logo";
 import { Input } from "@/components/ui/input";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Button } from "@/components/ui/button";

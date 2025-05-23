@@ -10,7 +10,7 @@ import {
 } from "../ui/dropdown-menu";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import Logo from "@/app/assets/svgs/Logo";
+import Logo from "@/assets/svgs/Logo";
 import { protectedRoutes } from "@/constants";
 import { useUser } from "@/context/UserContext";
 import { logOutUser } from "@/app/services/AuthService";

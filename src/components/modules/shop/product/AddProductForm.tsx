@@ -24,7 +24,7 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { Plus } from "lucide-react";
-import Logo from "@/app/assets/svgs/Logo";
+import Logo from "@/assets/svgs/Logo";
 import { IBrand, ICategory } from "@/types";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";

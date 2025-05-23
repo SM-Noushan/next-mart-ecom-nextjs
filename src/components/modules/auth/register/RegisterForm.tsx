@@ -12,7 +12,7 @@ import {
 import { toast } from "sonner";
 import { IUser } from "@/types";
 import { jwtDecode } from "jwt-decode";
-import Logo from "@/app/assets/svgs/Logo";
+import Logo from "@/assets/svgs/Logo";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
