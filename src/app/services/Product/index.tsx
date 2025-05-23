@@ -19,7 +19,9 @@ export const fetchAllProducts = async (page?: string) => {
 
 export const fetchSingleProduct = async (productId: string) => {
   try {
-    const res = await fetch(baseApi + "/product/" + productId);
+    const res = await fetch(baseApi + "/product/" + productId, {
+      next: { tags: ["PRODUCT"] },
+    });
     return res.json();
   } catch (error: any) {
     return Error(error);
