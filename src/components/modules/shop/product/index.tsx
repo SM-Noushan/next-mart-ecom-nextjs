@@ -5,9 +5,11 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { IProduct } from "@/types";
 import { useRouter } from "next/navigation";
+import DiscountModal from "./DiscountModal";
 import { Edit, Eye, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
+import { Checkbox } from "@/components/ui/checkbox";
 import { NMTable } from "@/components/ui/core/NMTable";
 import { deleteProduct } from "@/app/services/Product";
 import NMTableHeader from "@/components/ui/core/NMTable/Header";
@@ -22,6 +24,9 @@ const ManageProducts = ({ products }: TManageProductsProps) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
   const [selectedItem, setSelectedItem] = React.useState<string | null>(null);
+  const [selectedIdsForFlashSale, setSelectedIdsForFlashSale] = React.useState<
+    string[]
+  >([]);
 
   const handleView = (data: IProduct) => {
     console.log("Viewing product:", data);
@@ -52,6 +57,69 @@ const ManageProducts = ({ products }: TManageProductsProps) => {
   };
 
   const columns: ColumnDef<IProduct>[] = [
+    {
+      id: "select",
+      header: ({ table }) => {
+        const selectableRows = table
+          .getRowModel()
+          .flatRows.filter(
+            (row) => row.original.stock > 0 && !row.original.offerPrice
+          );
+
+        const allSelected =
+          selectedIdsForFlashSale.length > 0
+            ? selectableRows.every((row) =>
+                selectedIdsForFlashSale.includes(row.original._id)
+              )
+            : false;
+
+        const someSelected =
+          selectedIdsForFlashSale.length > 0
+            ? selectableRows.some((row) =>
+                selectedIdsForFlashSale.includes(row.original._id)
+              )
+            : false;
+
+        return (
+          <Checkbox
+            className="rounded"
+            checked={
+              allSelected ? allSelected : someSelected && "indeterminate"
+            }
+            onCheckedChange={(value) => {
+              const ids = value
+                ? selectableRows.map((row) => row.original._id)
+                : [];
+              setSelectedIdsForFlashSale(ids);
+              table
+                .getRowModel()
+                .flatRows.forEach((row) =>
+                  row.toggleSelected(ids.includes(row.original._id))
+                );
+            }}
+            aria-label="Select all"
+          />
+        );
+      },
+      cell: ({ row }) => (
+        <Checkbox
+          disabled={row.original.stock === 0 || !!row.original.offerPrice}
+          className="rounded"
+          checked={selectedIdsForFlashSale.includes(row.original._id)}
+          onCheckedChange={(value) => {
+            setSelectedIdsForFlashSale((prev) =>
+              value
+                ? [...prev, row.original._id]
+                : prev.filter((id) => id !== row.original._id)
+            );
+            row.toggleSelected(!!value);
+          }}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
     {
       accessorKey: "name",
       header: () => <NMTableHeader label="Name" />,
@@ -136,9 +204,15 @@ const ManageProducts = ({ products }: TManageProductsProps) => {
     <div>
       <div className="flex items-center justify-between mb-5">
         <h1 className="text-xl font-bold">Manage Products</h1>
-        <Button onClick={() => router.push("/user/shop/product/add")}>
-          Create Product
-        </Button>
+        <div className="flex items-center space-x-3">
+          <Button onClick={() => router.push("/user/shop/product/add")}>
+            Create Product
+          </Button>
+          <DiscountModal
+            selectedIdsForFlashSale={selectedIdsForFlashSale}
+            setSelectedIdsForFlashSale={setSelectedIdsForFlashSale}
+          />
+        </div>
       </div>
       <NMTable data={products} columns={columns} />
       <DeleteConfirmationModal
