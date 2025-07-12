@@ -17,9 +17,22 @@ export const addFlashSale = async (payload: {
       },
       body: JSON.stringify(payload),
     });
-    revalidateTag("PRODUCT");
+    ["PRODUCT", "FLASH_SALE_PRODUCTS"].forEach((tag) => revalidateTag(tag));
     return res.json();
   } catch (error: any) {
     return Error(error);
+  }
+};
+
+export const fetchFlashSaleProducts = async () => {
+  try {
+    const res = await fetch(baseApi + "/flash-sale", {
+      next: {
+        tags: ["FLASH_SALE_PRODUCTS"],
+      },
+    });
+    return await res.json();
+  } catch (error: any) {
+    return Error(error.message);
   }
 };

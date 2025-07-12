@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { addFlashSale } from "@/app/services/FlashSale";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 interface IDiscountModalProps {
   selectedIdsForFlashSale: string[];
@@ -30,6 +31,7 @@ const DiscountModal = ({
   selectedIdsForFlashSale,
   setSelectedIdsForFlashSale,
 }: IDiscountModalProps) => {
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const form = useForm();
@@ -49,6 +51,7 @@ const DiscountModal = ({
         setIsModalOpen(false);
         form.reset();
         setSelectedIdsForFlashSale([]);
+        router.push("/");
       } else toast.error(res.message);
     } catch (error) {
       console.error(error);
