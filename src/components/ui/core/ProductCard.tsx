@@ -49,12 +49,12 @@ const ProductCard = ({ product }: { product: IProduct }) => {
         <div className="flex items-center justify-between my-2">
           <p className="text-sm text-gray-600">
             {product?.offerPrice ? (
-              <div>
+              <>
                 <span className="font-semibold mr-2 text-orange-400">
                   $ {product?.offerPrice.toFixed(2)}
                 </span>
                 <del className="font-semibold text-xs">$ {product?.price.toFixed(2)}</del>
-              </div>
+              </>
             ) : (
               <span className="font-semibold">$ {product?.price.toFixed(2)}</span>
             )}
