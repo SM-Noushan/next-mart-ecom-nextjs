@@ -1,10 +1,9 @@
-import { ICategory } from "@/types";
+import AllProducts from "@/components/modules/products";
 import { fetchAllProducts } from "@/app/services/Product";
 import NMContainer from "@/components/ui/core/NMContainer";
-import CategoryCard from "@/components/ui/core/CategoryCard";
 import { fetchAllCategories } from "@/app/services/Category";
 import ProductBanner from "@/components/modules/products/banner";
-import AllProducts from "@/components/modules/products";
+import FeaturedCollection from "@/components/modules/products/featured-collection";
 
 const AllProductsPage = async () => {
   const { data: categories } = await fetchAllCategories();
@@ -13,12 +12,8 @@ const AllProductsPage = async () => {
   return (
     <NMContainer>
       <ProductBanner title="All Products" path="Home - Products" />
-      <h2 className="text-xl font-bold my-5">Featured Collection </h2>
-      <div className="grid grid-cols-6 gap-6">
-        {categories?.slice(0, 6).map((category: ICategory, idx: number) => (
-          <CategoryCard key={idx} category={category} />
-        ))}
-      </div>
+      <FeaturedCollection categories={categories} />
+
       <AllProducts products={products} />
     </NMContainer>
   );
