@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { toast } from "sonner";
-import { IProduct } from "@/types";
+import { IMeta, IProduct } from "@/types";
 import { useRouter } from "next/navigation";
 import DiscountModal from "./DiscountModal";
 import { Edit, Eye, Trash } from "lucide-react";
@@ -13,13 +13,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { NMTable } from "@/components/ui/core/NMTable";
 import { deleteProduct } from "@/app/services/Product";
 import NMTableHeader from "@/components/ui/core/NMTable/Header";
+import TablePagination from "@/components/ui/core/NMTable/TablePagination";
 import DeleteConfirmationModal from "@/components/ui/core/NMModal/DeleteConfirmationModal";
 
 type TManageProductsProps = {
   products: IProduct[];
+  meta: IMeta;
 };
 
-const ManageProducts = ({ products }: TManageProductsProps) => {
+const ManageProducts = ({ products, meta }: TManageProductsProps) => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
@@ -215,6 +217,7 @@ const ManageProducts = ({ products }: TManageProductsProps) => {
         </div>
       </div>
       <NMTable data={products} columns={columns} />
+      <TablePagination totalPage={meta.totalPage} />
       <DeleteConfirmationModal
         name={selectedItem}
         isOpen={isModalOpen}
